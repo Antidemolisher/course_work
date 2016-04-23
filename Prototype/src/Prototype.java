@@ -6,17 +6,16 @@ import java.util.ArrayList;
  * Created by Роман on 21.02.2016.
  */
 public class Prototype {
-    static double [][] g = {{-10.0,-20.0},{3.0,-4.0}};
-    static double [] f = {-30.0,-1.0};
-    static double [] y0 = {3.0,7.0};
+    static double [][] A = {{5.0/12,-1.0/12},{0.75,0.25}};
+    static double [] C = {1.0/3,1};
+    static double [] B = {0.75,0.25};
+    static double [] y0 = {1,1};
 
 //----------------------------------------------------------------------------------------------------------------------
 
 
     public static void evaluate(){
         double imagineTime = 0.9;
-        double temp = Calculator.getNorm(g);
-        imagineTime /= temp;
         method(imagineTime);
     }
 
@@ -24,6 +23,7 @@ public class Prototype {
         for(int i = 0; i<v.length; i++){
             System.out.print(v[i]+"   ");
         }
+        System.out.println();
         System.out.println("----------");
     }
 
@@ -35,26 +35,25 @@ public class Prototype {
         for(int i = 0; i < y1.length; i++)
             y1[i] = 0.0;
         readMethodNums(b1,b2,a);
-        for(int k =0; k<5; k++){
-            rkOneStep(imagineTime, b1, b2, a, y1);
+        for(int k =0; k<10; k++){
+            rkOneStep(b1, b2, a, y1);
         }
         printVect(y0);
     }
 
-    private static void rkOneStep(double imagineTime, ArrayList<Double> b1, ArrayList<Double> b2, ArrayList<Double> a, double[] y1) {
+    private static void rkOneStep(ArrayList<Double> b1, ArrayList<Double> b2, ArrayList<Double> a, double[] y1) {
         double[] k1 = new double[y0.length];
         double[] k2 = new double[y0.length];
+        double imagineTime = Calculator.getImagineTime(y0);
         for(int i = 0; i < 10; i++){
-            Calculator.getr(k1,y0,g,f);//k1
-
+            Calculator.getf(k1,y0);
             //k2
             for(int j = 0; j < y0.length; j++){
                 double temp = k1[j] * imagineTime * a.get(i);
                 y1[j] = y0[j];
                 y1[j] += temp;
             }
-            Calculator.getr(k2,y1,g,f);
-
+            Calculator.getf(k2,y1);
             //y(n+1)
             for(int k = 0; k < y0.length; k++){
                 y0[k] += imagineTime * b1.get(i) * k1[k];
